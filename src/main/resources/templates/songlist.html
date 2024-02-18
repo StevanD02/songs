@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Songs List</title>
+    <meta http-equiv="refresh" content="5">
+    <!-- Include Bootstrap for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Songs List</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Artist Name</th>
+            <th>Song Name</th>
+            <th>Link</th> <!-- New column for the link -->
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="song : ${songs}">
+            <td th:text="${song.artistName}">Artist Name</td>
+            <td th:text="${song.songName}">Song Name</td>
+            <td><a th:href="${song.youtubeLink}" th:text="${song.youtubeLink}" target="_blank">Link</a></td> <!-- Display the link -->
+            <td>
+                <form th:action="@{/removeSong/{id}(id=${song.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Completed</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Optional JavaScript for Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+body, html {
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    height: 100%; /* Ensure full height */
+    background-color: #f0f0f0; /* Apply grey background to entire page */
+    color: #000; /* Black text for contrast */
+    font-family: 'Courier New', Courier, monospace; /* Monospaced font for that typewriter look */
+}
+.container {
+    padding: 20px;
+    background-color: #f0f0f0; /* Match the body's background */
+    border: 3px solid #000; /* Thick black border */
+    margin-top: 20px; /* Add some space on the top */
+}
+h2 {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000; /* Add underline */
+}
+.form-group label {
+    font-weight: bold;
+}
+.form-control {
+    background-color: transparent;
+    border: 2px solid #000; /* Make inputs stand out with solid border */
+    font-family: 'Courier New', Courier, monospace;
+}
+.btn-primary {
+    background-color: #000; /* Black background for buttons */
+    border: none;
+    color: #fff; /* White text */
+}
+.list-group-item {
+    border: 2px solid #000; /* Solid borders for list items */
+    background-color: #f0f0f0; /* Match the background */
+    color: #000; /* Ensure text is readable */
+    margin-bottom: 5px; /* Space out items */
+}
+.list-group-item img {
+    vertical-align: middle;
+    margin-right: 10px;
+}

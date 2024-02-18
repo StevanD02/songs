@@ -1,0 +1,30 @@
+.container {
+    padding: 20px;
+    background-color: #fff; /* White background for better readability */
+}
+
+.h2 {
+    font-size: 24px; /* Adjust based on your preference */
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.table {
+    margin-top: 20px; /* Space above the table */
+}
+
+.table th, .table td {
+    text-align: left; /* Align table headers and cells to the left */
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Bootstrap red color for the 'Completed' button */
+    border-color: #dc3545;
+}
+
+/* Add custom styles for the thumbnail images in the table */
+.thumbnail {
+    width: 50px; /* Set thumbnail width */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between thumbnail and text */
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Songs List</title>
+    <!-- Include Bootstrap for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/songlist.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f0f0;
+            color: #000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .container {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 3px solid #000;
+            margin-top: 20px;
+        }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+        }
+        .table {
+            background-color: transparent;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 2px solid #000;
+            padding: 8px;
+        }
+        .btn-danger {
+            background-color: #000;
+            border: none;
+            color: #fff;
+        }
+        .thumbnail {
+            width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .table thead th {
+            border-bottom: 2px solid #000; /* Make the bottom border black */
+        }
+
+        /* If you have a separate border-top for thead, make sure it's also black */
+        .table thead {
+            border-top: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>Songs List</h2>
+    <table class="table" id="songsTable">
+        <thead>
+        <tr>
+            <th>Artist Name</th>
+            <th>Song Name</th>
+            <th>Thumbnail</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Songs will be loaded here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        fetchSongsAndUpdate(); // Initial fetch
+
+        function fetchSongsAndUpdate() {
+            $.ajax({
+                url: '/api/songs',
+                success: function(data) {
+                    var tableContent = '';
+                    data.forEach(function(song) {
+                        tableContent += '<tr id="songRow-' + song.id + '">' +
+                            '<td>' + song.artistName + '</td>' +
+                            '<td>' + song.songName + '</td>' +
+                            '<td><img src="' + song.thumbnailUrl + '" alt="Thumbnail" class="thumbnail"></td>' +
+                            '<td><button class="btn btn-danger remove-song" data-song-id="' + song.id + '">Remove</button></td>' +
+                            '</tr>';
+                    });
+                    $('#songsTable tbody').html(tableContent);
+                }
+            });
+        }
+
+        $('body').on('click', '.remove-song', function() {
+            var songId = $(this).data('song-id');
+            $('#songRow-' + songId).remove();
+            $.ajax({
+                url: '/removeSong/' + songId,
+                type: 'POST',
+                success: function() {
+                    console.log('Song removed successfully');
+                },
+                error: function() {
+                    alert('Error removing song');
+                    fetchSongsAndUpdate();
+                }
+            });
+        });
+
+        setInterval(fetchSongsAndUpdate, 5000);
+    });
+</script>
+
+</body>
+</html>

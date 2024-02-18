@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Song Request Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f0f0f0;
+            color: #000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .container {
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 3px solid #000;
+            margin-top: 20px;
+        }
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #000;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-control {
+            background-color: transparent;
+            border: 2px solid #000;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .btn-primary {
+            background-color: #000;
+            border: none;
+            color: #fff;
+        }
+        .list-group-item {
+            border: 2px solid #000;
+            background-color: #f0f0f0;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        .list-group-item img {
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Request a Song</h2>
+    <form th:action="@{/order}" th:object="${songRequest}" method="post" autocomplete="off">
+        <div class="form-group">
+            <label for="songName">Song Name:</label>
+            <input type="text" class="form-control" id="songName" name="songName" th:field="*{songName}" required autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="artistName">Artist Name:</label>
+            <input type="text" class="form-control" id="artistName" name="artistName" th:field="*{artistName}" required autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="deezerSearch">Search Deezer:</label>
+            <input type="text" class="form-control" id="deezerSearch" placeholder="Type to search on Deezer...">
+            <div id="deezerResults" class="list-group"></div>
+        </div>
+        <input type="hidden" id="thumbnailUrl" name="thumbnailUrl" th:field="*{thumbnailUrl}">
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#deezerSearch').on('input', function() {
+            var query = $(this).val();
+            if (query.length >= 3) {
+                var searchUrl = "/deezerSearch?query=" + encodeURIComponent(query);
+                $.getJSON(searchUrl, function(data) {
+                    $('#deezerResults').empty();
+                    data.data.forEach(function(item) {
+                        $('#deezerResults').append(
+                            `<div class="list-group-item list-group-item-action" data-deezer-id="${item.id}" data-song-name="${item.title}" data-artist-name="${item.artist.name}" data-thumbnail-url="${item.album.cover_small}">
+                                <img src="${item.album.cover_small}" alt="Thumbnail">
+                                ${item.artist.name} - ${item.title}
+                            </div>`
+                        );
+                    });
+                });
+            } else {
+                $('#deezerResults').empty();
+            }
+        });
+
+        $(document).on('click', '#deezerResults div', function() {
+            var songName = $(this).data('song-name');
+            var artistName = $(this).data('artist-name');
+            var thumbnailUrl = $(this).data('thumbnail-url');
+            $('#songName').val(songName);
+            $('#artistName').val(artistName);
+            $('#thumbnailUrl').val(thumbnailUrl);
+            $('#deezerResults').empty();
+        });
+    });
+</script>
+
+</body>
+</html>
