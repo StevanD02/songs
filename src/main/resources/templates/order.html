@@ -80,24 +80,30 @@
 
 <script>
     $(document).ready(function() {
+        var debounceTimeout;
         $('#deezerSearch').on('input', function() {
+            clearTimeout(debounceTimeout); // Clear the previous timeout
             var query = $(this).val();
-            if (query.length >= 3) {
-                var searchUrl = "/deezerSearch?query=" + encodeURIComponent(query);
-                $.getJSON(searchUrl, function(data) {
-                    $('#deezerResults').empty();
-                    data.data.forEach(function(item) {
-                        $('#deezerResults').append(
-                            `<div class="list-group-item list-group-item-action" data-deezer-id="${item.id}" data-song-name="${item.title}" data-artist-name="${item.artist.name}" data-thumbnail-url="${item.album.cover_small}">
+
+            // Set a new timeout
+            debounceTimeout = setTimeout(function() {
+                if (query.length >= 3) {
+                    var searchUrl = "/deezerSearch?query=" + encodeURIComponent(query);
+                    $.getJSON(searchUrl, function(data) {
+                        $('#deezerResults').empty();
+                        data.data.forEach(function(item) {
+                            $('#deezerResults').append(
+                                `<div class="list-group-item list-group-item-action" data-deezer-id="${item.id}" data-song-name="${item.title}" data-artist-name="${item.artist.name}" data-thumbnail-url="${item.album.cover_small}">
                                 <img src="${item.album.cover_small}" alt="Thumbnail">
                                 ${item.artist.name} - ${item.title}
                             </div>`
-                        );
+                            );
+                        });
                     });
-                });
-            } else {
-                $('#deezerResults').empty();
-            }
+                } else {
+                    $('#deezerResults').empty();
+                }
+            }, 500); // Wait for 500 ms before sending the search request
         });
 
         $(document).on('click', '#deezerResults div', function() {
@@ -110,6 +116,7 @@
             $('#deezerResults').empty();
         });
     });
+
 </script>
 
 </body>
