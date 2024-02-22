@@ -77,12 +77,24 @@
 
 <script>
     $(document).ready(function() {
-        fetchSongsAndUpdate(); // Initial fetch
+        let previousSongIds = new Set(); // Store the previous list of song IDs
+
+        // Request notification permission on page load
+        requestNotificationPermission();
 
         function fetchSongsAndUpdate() {
             $.ajax({
                 url: '/api/songs',
                 success: function(data) {
+                    let currentSongIds = new Set(data.map(song => song.id)); // Get current list of song IDs
+                    // Check if there are any changes in the song list
+                    if (!arraysEqual([...previousSongIds], [...currentSongIds]) && document.visibilityState === 'hidden') {
+                        showNotification('New song added!', {
+                            body: 'Check out the new songs added!',
+                        });
+                    }
+                    previousSongIds = currentSongIds; // Update the record of song IDs for the next comparison
+
                     var tableContent = '';
                     data.forEach(function(song) {
                         tableContent += '<tr id="songRow-' + song.id + '">' +
@@ -108,12 +120,38 @@
                 },
                 error: function() {
                     alert('Error removing song');
-                    fetchSongsAndUpdate();
+                    fetchSongsAndUpdate(); // Refresh list if there was an error
                 }
             });
         });
 
         setInterval(fetchSongsAndUpdate, 5000);
+
+        // Helper function to check if two arrays are equal
+        function arraysEqual(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (let i = 0; i < arr1.length; i++) {
+                if (!arr2.includes(arr1[i])) return false;
+            }
+            return true;
+        }
+
+        // Function to request notification permission from the user
+        function requestNotificationPermission() {
+            Notification.requestPermission().then(function(result) {
+                console.log('Notification permission result:', result);
+            });
+        }
+
+        // Function to show a desktop notification
+        function showNotification(title, options) {
+            if (Notification.permission === 'granted') {
+                var notification = new Notification(title, options);
+                notification.onclick = function() {
+                    window.focus(); // This attempts to focus the window that showed the notification
+                };
+            }
+        }
     });
 </script>
 
