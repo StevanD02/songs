@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class OrderController{
+
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/order";
+    }
+
     @GetMapping("/order")
     public String getOrder(Model model){
         model.addAttribute("songRequest", new SongRequest());
